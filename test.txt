@@ -1,0 +1,8 @@
+
+(define
+ var1
+  3
+  )
+  ( define func1 ( par 1 )
+   ())
+   (walk var)(NOP) (if(not(blocked?)))
