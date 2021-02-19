@@ -1,8 +1,26 @@
+( rotate back )
 
-(define
- var1
-  3
+
+
+
+(define one 1)
+
+(define foo (c p)
+ (block
+   (drop c)
+    (free p)
+    (walk one)))
+
+
+(foo 1 3)
+
+
+(define goEnd ()
+  (if (not (blocked?))
+      (block
+        (walk 1)
+        (goEnd)
+   )
+   (NOP)
   )
-  ( define func1 ( par 1 )
-   ())
-   (walk var)(NOP) (if(not(blocked?)))
+ )
