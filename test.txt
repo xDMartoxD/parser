@@ -23,5 +23,6 @@
    (NOP)
   )
  )
+(if (not ( blocked?)))
 
 

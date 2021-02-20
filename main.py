@@ -250,7 +250,7 @@ def analyzeToken(token: str, parameters={}) -> tuple:
                     if type(value) == int:
                         separatedToken[1] = str(value)
                         token = ' '.join(separatedToken)
-                        
+
                     else:
                         badToken = True
                         message = 'en ({}) se esperaba un numero o una variable de tipo entero pero se obtuvo {}'.format(
@@ -338,6 +338,10 @@ def analyzeToken(token: str, parameters={}) -> tuple:
                         return badToken, message
 
         else:
+            if separatedToken[0] in conditions:
+                badToken = True
+                message = 'Deberia haber un if antes de la condicion {}'.format(token)
+                return badToken, message
             if separatedToken[0] not in definedFunctions:
                 badToken = True
             message = 'No se reconoce el token {}'.format(token)
@@ -362,17 +366,17 @@ def checkSyntax(code: str) -> None:
         print('todos los caracteres deben estar dentro de algun parentesis')
         return
     tokens = splitByParenthesis(code)
-    print('--------------------------------------------------------------------------------------------------')
+    print(80*'-')
     for token in tokens:
         badToken, message = analyzeToken(token)
         if badToken:
             print(colored(200, 0, 0, 'EL TOKEN {} NO HACE PARTE DEL LENGUAJE'.format(token)))
             print(colored(200, 0, 0, message))
-            print('--------------------------------------------------------------------------------------------------')
+            print(80*'-')
             break
         else:
             print(colored(0, 200, 000, 'EL TOKEN {} HACE PARTE DEL LENGUAJE'.format(token)))
-            print('--------------------------------------------------------------------------------------------------')
+            print(80*'-')
 
 
 print('Bienvenido')
