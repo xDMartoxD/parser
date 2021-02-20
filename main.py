@@ -98,11 +98,10 @@ def formatToken(token: str) -> tuple:
     return token, separatedToken
 
 
-def analyzeToken(token: str) -> tuple:
+def analyzeToken(token: str, parameters={}) -> tuple:
     token, separatedToken = formatToken(token)
     badToken: bool = False
     message: str = ''
-
     if separatedToken[0] in commands:
         if separatedToken[0] == 'walk':
             if len(separatedToken) != 2:
@@ -112,15 +111,22 @@ def analyzeToken(token: str) -> tuple:
                 if not separatedToken[1].isdigit():
                     key = separatedToken[1]
                     value = variables.get(separatedToken[1])
-                    if bool(value) and type(value) == int:
-                        token = token.replace(str(key), str(value))
+                    if key in parameters:
+                        value = 0
+                    if type(value) == int:
+                        separatedToken[1] = str(value)
+                        token = ' '.join(separatedToken)
+
                     else:
                         badToken = True
                         message = 'en ({}) se esparaba un numero o una variable de tipo entero pero se obtuvo {}'.format(
                             token, value)
+
                 if not badToken:
                     badToken = not bool(re.match(r'\s*(walk)\s+([0-9]+\s*)$', token))
                     message = 'Error en {}'.format(token)
+                if badToken:
+                    return badToken, message
         elif separatedToken[0] == 'rotate':
             if len(separatedToken) != 2:
                 badToken = True
@@ -128,6 +134,8 @@ def analyzeToken(token: str) -> tuple:
             else:
                 badToken = not bool(re.match(r'\s*(rotate)\s+((left|right|back)\s*)$', token))
                 message = 'Error en {}'.format(token)
+            if badToken:
+                return badToken, message
         elif separatedToken[0] == 'look':
             if len(separatedToken) != 2:
                 badToken = True
@@ -135,8 +143,9 @@ def analyzeToken(token: str) -> tuple:
             else:
                 badToken = not bool(re.match(r'\s*(look)\s+((N|E|W|S)\s*)$', token))
                 message = "Error en {}".format(token)
+            if badToken:
+                return badToken, message
         elif separatedToken[0] == 'drop':
-
             if len(separatedToken) != 2:
                 badToken = True
                 message = 'Faltan o sobran variables en {}'.format(token)
@@ -144,8 +153,12 @@ def analyzeToken(token: str) -> tuple:
                 if not separatedToken[1].isdigit():
                     key = separatedToken[1]
                     value = variables.get(separatedToken[1])
-                    if bool(value) and type(value) == int:
-                        token = token.replace(str(key), str(value))
+                    if key in parameters:
+                        value = 0
+                    if type(value) == int:
+                        separatedToken[1] = str(value)
+                        token = ' '.join(separatedToken)
+
                     else:
                         badToken = True
                         message = 'en ({}) se esparaba un numero o una variable de tipo entero pero se obtuvo {}'.format(
@@ -153,6 +166,8 @@ def analyzeToken(token: str) -> tuple:
                 if not badToken:
                     badToken = not bool(re.match(r'\s*(drop)\s+([0-9]+\s*)$', token))
                     message = 'Error en {}'.format(token)
+                if badToken:
+                    return badToken, message
         elif separatedToken[0] == 'free':
             if len(separatedToken) != 2:
                 badToken = True
@@ -161,8 +176,12 @@ def analyzeToken(token: str) -> tuple:
                 if not separatedToken[1].isdigit():
                     key = separatedToken[1]
                     value = variables.get(separatedToken[1])
-                    if bool(value) and type(value) == int:
-                        token = token.replace(str(key), str(value))
+                    if key in parameters:
+                        value = 0
+                    if type(value) == int:
+                        separatedToken[1] = str(value)
+                        token = ' '.join(separatedToken)
+
                     else:
                         badToken = True
                         message = 'en ({}) se esparaba un numero o una variable de tipo entero pero se obtuvo {}'.format(
@@ -170,6 +189,8 @@ def analyzeToken(token: str) -> tuple:
                 if not badToken:
                     badToken = not bool(re.match(r'\s*(free)\s+([0-9]+\s*)$', token))
                     message = 'Error en {}'.format(token)
+                if badToken:
+                    return badToken, message
         elif separatedToken[0] == 'peek':
             if len(separatedToken) != 2:
                 badToken = True
@@ -178,8 +199,12 @@ def analyzeToken(token: str) -> tuple:
                 if not separatedToken[1].isdigit():
                     key = separatedToken[1]
                     value = variables.get(separatedToken[1])
-                    if bool(value) and type(value) == int:
-                        token = token.replace(str(key), str(value))
+                    if key in parameters:
+                        value = 0
+                    if type(value) == int:
+                        separatedToken[1] = str(value)
+                        token = ' '.join(separatedToken)
+
                     else:
                         badToken = True
                         message = 'en ({}) se esparaba un numero o una variable de tipo entero pero se obtuvo {}'.format(
@@ -187,6 +212,8 @@ def analyzeToken(token: str) -> tuple:
                 if not badToken:
                     badToken = not bool(re.match(r'\s*(peek)\s+([0-9]+\s*)$', token))
                     message = 'Error en {}'.format(token)
+                if badToken:
+                    return badToken, message
         elif separatedToken[0] == 'grab':
             if len(separatedToken) != 2:
                 badToken = True
@@ -195,8 +222,12 @@ def analyzeToken(token: str) -> tuple:
                 if not separatedToken[1].isdigit():
                     key = separatedToken[1]
                     value = variables.get(separatedToken[1])
-                    if bool(value) and type(value) == int:
-                        token = token.replace(str(key), str(value))
+                    if key in parameters:
+                        value = 0
+                    if type(value) == int:
+                        separatedToken[1] = str(value)
+                        token = ' '.join(separatedToken)
+
                     else:
                         badToken = True
                         message = 'en ({}) se esparaba un numero o una variable de tipo entero pero se obtuvo {}'.format(
@@ -204,6 +235,8 @@ def analyzeToken(token: str) -> tuple:
                 if not badToken:
                     badToken = not bool(re.match(r'\s*(grab)\s+([0-9]+\s*)$', token))
                     message = 'Error en {}'.format(token)
+                if badToken:
+                    return badToken, message
         elif separatedToken[0] == 'walkTo':
             if len(separatedToken) != 3:
                 badToken = True
@@ -212,8 +245,12 @@ def analyzeToken(token: str) -> tuple:
                 if not separatedToken[2].isdigit():
                     key = separatedToken[2]
                     value = variables.get(separatedToken[2])
-                    if bool(value) and type(value) == int:
-                        token = token.replace(str(key), str(value))
+                    if key in parameters:
+                        value = 0
+                    if type(value) == int:
+                        separatedToken[1] = str(value)
+                        token = ' '.join(separatedToken)
+                        
                     else:
                         badToken = True
                         message = 'en ({}) se esperaba un numero o una variable de tipo entero pero se obtuvo {}'.format(
@@ -221,6 +258,8 @@ def analyzeToken(token: str) -> tuple:
                 if not badToken:
                     badToken = not bool(re.match(r'\s*(walkTo)\s+(W|E|N|S)\s+([0-9]+\s*)$', token))
                     message = 'Error en {}'.format(token)
+                if badToken:
+                    return badToken, message
 
         elif separatedToken[0] == 'NOP':
             if len(separatedToken) != 1:
@@ -229,29 +268,38 @@ def analyzeToken(token: str) -> tuple:
             else:
                 badToken = not bool(re.match(r'^\s*(NOP)\s*$', token))
                 message = 'error en {}'.format(token)
+            if badToken:
+                return badToken, message
         elif separatedToken[0] == 'block':
             token = token.replace('block', '')
             separatedTokens = splitByParenthesis(token)
             for separatedToken in separatedTokens:
-                checkSyntax(separatedToken)
+                badToken, message = analyzeToken(separatedToken, parameters=parameters)
+                if badToken:
+                    return badToken, message
     else:
         if separatedToken[0] == 'define':
             if bool(re.match(r'\s*(define)\s*([a-zA-Z]+[a-zA-Z0-9]*)\s+[(][a-zA-Z0-9\s]*[)]\s+([(].*[)]\s*)$', token)):
                 funcName = separatedToken[1]
                 definedFunctions.add(funcName)
                 token = token.replace('define', '')
-                token = token.replace(funcName, '')
+                token = token.replace(funcName, '', 1)
                 [params, instructions] = splitByParenthesis(token)
                 badToken = not bool(re.match(r'[(][a-zA-Z\s]*[)]', params))
                 message = 'Error en el token {}'.format(token)
+                params, separatedParams = formatToken(params)
+                paramsSet = set(separatedParams)
 
                 if not badToken:
-                    instructionsFormated, separatedInstructions = formatToken(instructions)
+                    _, separatedInstructions = formatToken(instructions)
                     if len(separatedInstructions) < 1:
                         badToken = True
                         message = ' no hay instrucciones'
+                        return badToken, message
                     else:
-                        analyzeToken(instructions)
+                        badToken, message = analyzeToken(instructions, parameters=paramsSet)
+                        if badToken:
+                            return badToken, message
 
             elif bool(re.match(r'\s*(define)\s*([a-zA-Z]+[a-zA-Z0-9]*)\s+([a-zA-z0-9]+\s*)$', token)):
                 key = separatedToken[1]
@@ -261,7 +309,7 @@ def analyzeToken(token: str) -> tuple:
                 except ValueError:
                     message = 'Todas las varaibles deberian de ser numeros enteros'
                     badToken = True
-                    return message, badToken
+                    return badToken, message
             else:
                 badToken = True
                 message = 'no se reconoce si es funcion o variabe {}'.format(token)
@@ -269,7 +317,6 @@ def analyzeToken(token: str) -> tuple:
         elif separatedToken[0] == 'if':
             token = token.replace('if', '')
             newTokens = splitByParenthesis(token)
-
             if len(newTokens) != 3:
                 badToken = True
                 message = "debe haber un condicional y dos comandos {}".format(newTokens)
@@ -285,13 +332,14 @@ def analyzeToken(token: str) -> tuple:
                     message = 'se esparaba un comando pero se obtuvo {}'.format(newCommand)
                     return badToken, message
             if not badToken:
-                for newToken in newTokens:
-                    checkSyntax(newToken)
+                for newToken in newTokens[1:]:
+                    badToken, message = analyzeToken(newToken, parameters=parameters)
+                    if badToken:
+                        return badToken, message
+
         else:
-            badToken, message = checkConditionals(token, separatedToken)
-            if badToken:
-                if separatedToken[0] in definedFunctions:
-                    badToken = False
+            if separatedToken[0] not in definedFunctions:
+                badToken = True
             message = 'No se reconoce el token {}'.format(token)
 
     return badToken, message
