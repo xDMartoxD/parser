@@ -1,28 +1,9 @@
-( rotate back )
+(walk     400)
+
+(walk
+
+4)
 
 
 
-(define one 1)
-
-(define foo (c p)
- (block
-   (drop p)
-    (free p)
-    (walk one)))
-
-
-(foo  3)
-
-
-(define goEnd ()
-  (if ( not ( not (can grab)))
-      (block
-        (walk 1)
-        (goEnd)
-   )
-   (NOP)
-  )
- )
-(if (not ( blocked?)))
-
-
+(walk4)

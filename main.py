@@ -2,8 +2,9 @@ import re
 
 definedFunctions = set()
 commands = {'walk', 'rotate', 'look', 'drop', 'free', 'peek', 'grab', 'walkTo', 'NOP', 'block'}
-variables = dict({"var": 1})
+variables = dict()
 conditions = {'blocked?', 'facing?', 'can', 'not'}
+parametersLength = dict()
 
 
 def checkBalancedParenthesis(code: str) -> bool:
@@ -73,7 +74,7 @@ def checkConditionals(conditional: str, separatedConditional: list) -> tuple:
         message = 'Se esperaba un condicional pero se obtuvo {}'.format(conditional)
     if not badToken:
         if separatedConditional[0] == 'not':
-            badToken = not bool(re.match(r'^\s*not\s*[(]\n*.+\n*[)]$', conditional))
+            badToken = not bool(re.match(r'^\s*not\s*[(]\n*.+\n*[)]\s*$', conditional))
             message = 'error en  {}'.format(conditional)
             if not badToken:
                 conditional = ' '.join(separatedConditional[1:])
@@ -94,7 +95,10 @@ def checkConditionals(conditional: str, separatedConditional: list) -> tuple:
 
 def formatToken(token: str) -> tuple:
     token = token[1: len(token) - 1]
+    token = token.replace('(', ' ( ')
+    token = token.replace(')', ' ) ')
     separatedToken = token.split()
+
     return token, separatedToken
 
 
@@ -271,7 +275,7 @@ def analyzeToken(token: str, parameters={}) -> tuple:
             if badToken:
                 return badToken, message
         elif separatedToken[0] == 'block':
-            token = token.replace('block', '')
+            token = token.replace('block', '', 1)
             separatedTokens = splitByParenthesis(token)
             for separatedToken in separatedTokens:
                 badToken, message = analyzeToken(separatedToken, parameters=parameters)
@@ -282,13 +286,15 @@ def analyzeToken(token: str, parameters={}) -> tuple:
             if bool(re.match(r'\s*(define)\s*([a-zA-Z]+[a-zA-Z0-9]*)\s+[(][a-zA-Z0-9\s]*[)]\s+([(].*[)]\s*)$', token)):
                 funcName = separatedToken[1]
                 definedFunctions.add(funcName)
-                token = token.replace('define', '')
+                token = token.replace('define', '', 1)
                 token = token.replace(funcName, '', 1)
                 [params, instructions] = splitByParenthesis(token)
                 badToken = not bool(re.match(r'[(][a-zA-Z\s]*[)]', params))
                 message = 'Error en el token {}'.format(token)
                 params, separatedParams = formatToken(params)
                 paramsSet = set(separatedParams)
+
+                parametersLength[funcName] = len(paramsSet)
 
                 if not badToken:
                     _, separatedInstructions = formatToken(instructions)
@@ -342,9 +348,20 @@ def analyzeToken(token: str, parameters={}) -> tuple:
                 badToken = True
                 message = 'Deberia haber un if antes de la condicion {}'.format(token)
                 return badToken, message
-            if separatedToken[0] not in definedFunctions:
+            if separatedToken[0] in definedFunctions:
+                if len(separatedToken[1:]) != parametersLength[separatedToken[0]]:
+                    badToken = True
+                    message = 'Mas parametros de los permitidos'
+                    return badToken, message
+
+                for param in separatedToken[1:]:
+                    if type(param) != int and param not in variables and param not in parameters:
+                        badToken = True
+                        message = 'parametro incorrecto {}'.format(param)
+                        return badToken, message
+            else:
+                message = 'No se reconoce el token {}'.format(token)
                 badToken = True
-            message = 'No se reconoce el token {}'.format(token)
 
     return badToken, message
 
